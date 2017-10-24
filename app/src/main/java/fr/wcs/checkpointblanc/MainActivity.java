@@ -14,6 +14,7 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText marque, name, immatriculation, kilometres;
     private Button send, voir;
+    DatabaseHelper mDatabaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,9 +28,9 @@ public class MainActivity extends AppCompatActivity {
         send = (Button)findViewById(R.id.sendButton);
         voir = (Button)findViewById(R.id.toutVoirButton);
 
-        DatabaseHelper  DatabaseHelper = new DatabaseHelper(MainActivity.this);
+        mDatabaseHelper = new DatabaseHelper(MainActivity.this);
         // Gets the data repository in write mode
-        final SQLiteDatabase db = DatabaseHelper.getWritableDatabase();
+        final SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // Insert the new row, returning the primary key value of the new row
                 long newRowId = db.insert(DatabaseContract.CarEntry.TABLE_NAME, null, values);
+                Toast.makeText(MainActivity.this, "OK", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -68,10 +70,10 @@ public class MainActivity extends AppCompatActivity {
                 );
 
                 while(cursor.moveToNext()) {
-                    String content = cursor.getString(
+                    String immatriculation = cursor.getString(
                             cursor.getColumnIndexOrThrow(DatabaseContract.CarEntry.COLUMN_NAME_IMMATRICULATION));
 
-                    Toast.makeText(MainActivity.this, content, Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, immatriculation, Toast.LENGTH_LONG).show();
                 }
                 cursor.close();
             }

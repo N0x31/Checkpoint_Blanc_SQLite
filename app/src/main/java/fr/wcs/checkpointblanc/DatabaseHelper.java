@@ -9,30 +9,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "Car.db";
 
-    public static final String SQL_CREATE_CAR =
+    private static final String SQL_CREATE_CAR =
             "CREATE TABLE IF NOT EXISTS " + DatabaseContract.CarEntry.TABLE_NAME + " (" +
-                    DatabaseContract.CarEntry.COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    DatabaseContract.CarEntry.COLUMN_NAME_NAME + " TEXT NOT NULL," +
-                    DatabaseContract.CarEntry.COLUMN_NAME_MARQUE + "TEXT NOT NULL," +
-                    DatabaseContract.CarEntry.COLUMN_NAME_KILOMETERS + "INTEGER," +
-                    DatabaseContract.CarEntry.COLUMN_NAME_IMMATRICULATION + " INTEGER UNIQUE NOT NULL";
+                    DatabaseContract.CarEntry._ID + " INTEGER PRIMARY KEY," +
+                    DatabaseContract.CarEntry.COLUMN_NAME_ID + " TEXT," +
+                    DatabaseContract.CarEntry.COLUMN_NAME_NAME + " TEXT," +
+                    DatabaseContract.CarEntry.COLUMN_NAME_MARQUE + " TEXT," +
+                    DatabaseContract.CarEntry.COLUMN_NAME_IMMATRICULATION + " TEXT," +
+                    DatabaseContract.CarEntry.COLUMN_NAME_KILOMETERS + " INTEGER)";
 
-    public static final String SQL_DELETE_CAR =
+    private static final String SQL_DELETE_CAR =
             "DROP TABLE IF EXISTS " + DatabaseContract.CarEntry.TABLE_NAME;
 
-    public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        public DatabaseHelper(Context context) {
+            super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        }
+        public void onCreate(SQLiteDatabase db) {
+            db.execSQL(SQL_CREATE_CAR);
+        }
+        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            // This database is only a cache for online data, so its upgrade policy is
+            // to simply to discard the data and start over
+            db.execSQL(SQL_DELETE_CAR);
+            onCreate(db);
+        }
+        public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            onUpgrade(db, oldVersion, newVersion);
+        }
     }
-
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL(SQL_CREATE_CAR);
-
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-        db.execSQL(SQL_DELETE_CAR);
-        onCreate(db);
-    }
-}
